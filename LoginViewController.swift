@@ -12,8 +12,11 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var tapRecognizer: UITapGestureRecognizer? = nil
+    
+    var savedStudents = SavedStudents()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -28,6 +31,10 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     override func viewWillAppear(animated: Bool) {
         addKeyboardDismissRecognizer()
+        activityIndicator.hidden = true
+        if activityIndicator.isAnimating() {
+            activityIndicator.stopAnimating()
+        }
     }
     
     override func viewDidDisappear(animated: Bool) {
@@ -41,6 +48,9 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     @IBAction func loginButtonTouch(sender: UIButton) {
         // Attempt login only if there's an e-mail & a password
         if !(emailTextField.text!.isEmpty || passwordTextField.text!.isEmpty) {
+            activityIndicator.hidden = false
+            activityIndicator.startAnimating()
+            
             UdacityClient.sharedInstance().authenticateAndGetUserData(self, username: emailTextField.text!, password: passwordTextField.text!) { (success, uniqueKey: String?, userData: UdacityUser?, errorString) in
                 
                 if success {
@@ -66,9 +76,8 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
     
     func completeLogin(uniqueKey: String, userData: UdacityUser) {
         
-        // Save the user data & its unique id to the app delegate
-        (UIApplication.sharedApplication().delegate as! AppDelegate).udacityUserData = userData
-        (UIApplication.sharedApplication().delegate as! AppDelegate).userUniqueID = uniqueKey
+        savedStudents.udacityUserData = userData
+        savedStudents.userUniqueID = uniqueKey
         
         dispatch_async(dispatch_get_main_queue(), {
             let controller = self.storyboard!.instantiateViewControllerWithIdentifier("StudentsLocationsTabbedBar") as! UITabBarController
@@ -83,8 +92,14 @@ class LoginViewController: UIViewController, UITextFieldDelegate {
             let alert = UIAlertController(title: "", message: errorString, preferredStyle: .Alert)
             let dismissAction = UIAlertAction(title: "Dismiss", style: UIAlertActionStyle.Default, handler: nil)
             alert.addAction(dismissAction)
+            dispatch_async(dispatch_get_main_queue(), {
+                if self.activityIndicator.isAnimating(){
+                    self.activityIndicator.hidden = true
+                    self.activityIndicator.stopAnimating()
+                }
                 // Display the Alert view controller
                 self.presentViewController (alert, animated: true, completion: nil)
+            })
             }
         }
     

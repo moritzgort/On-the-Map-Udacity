@@ -28,6 +28,7 @@
 		8E12E1721C3418060044B340 /* UdacityClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E12E1711C3418060044B340 /* UdacityClient.swift */; };
 		8E12E1741C34181E0044B340 /* UdacityConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E12E1731C34181E0044B340 /* UdacityConvenience.swift */; };
 		8E12E1781C341CB40044B340 /* NSNotificationCenterKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E12E1771C341CB40044B340 /* NSNotificationCenterKeys.swift */; };
+		8E3680751C38133C00541C39 /* SavedStudents.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E3680741C38133C00541C39 /* SavedStudents.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +76,7 @@
 		8E12E1711C3418060044B340 /* UdacityClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityClient.swift; sourceTree = "<group>"; };
 		8E12E1731C34181E0044B340 /* UdacityConvenience.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UdacityConvenience.swift; sourceTree = "<group>"; };
 		8E12E1771C341CB40044B340 /* NSNotificationCenterKeys.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSNotificationCenterKeys.swift; sourceTree = "<group>"; };
+		8E3680741C38133C00541C39 /* SavedStudents.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SavedStudents.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				8E12E1261C3410FF0044B340 /* AppDelegate.swift */,
+				8E3680741C38133C00541C39 /* SavedStudents.swift */,
 				8E12E1771C341CB40044B340 /* NSNotificationCenterKeys.swift */,
 				8E12E1761C3418310044B340 /* Clients */,
 				8E12E12A1C3410FF0044B340 /* Main.storyboard */,
@@ -346,6 +349,7 @@
 				8E12E1651C3417630044B340 /* ParseConvenience.swift in Sources */,
 				8E12E1581C34154B0044B340 /* InformationPostingController.swift in Sources */,
 				8E12E1781C341CB40044B340 /* NSNotificationCenterKeys.swift in Sources */,
+				8E3680751C38133C00541C39 /* SavedStudents.swift in Sources */,
 				8E12E16E1C3417E60044B340 /* UdacityUser.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -571,6 +575,7 @@
 				8E12E1501C3410FF0044B340 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8E12E1511C3410FF0044B340 /* Build configuration list for PBXNativeTarget "On the Map 2Tests" */ = {
 			isa = XCConfigurationList;
@@ -579,6 +584,7 @@
 				8E12E1531C3410FF0044B340 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		8E12E1541C3410FF0044B340 /* Build configuration list for PBXNativeTarget "On the Map 2UITests" */ = {
 			isa = XCConfigurationList;
@@ -587,6 +593,7 @@
 				8E12E1561C3410FF0044B340 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

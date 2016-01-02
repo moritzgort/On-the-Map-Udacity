@@ -14,13 +14,19 @@ class StudentLocationsMapViewController: UIViewController, MKMapViewDelegate {
     // Varaibles to hold the user data & unique key
     var userData: UdacityUser!
     var uniqueKey: String!
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
+    var savedStudents = SavedStudents()
     
     // Variable to hold the old annotations
     var oldAnnotations = [MKPointAnnotation]()
     
     @IBOutlet weak var mapView: MKMapView!
     @IBOutlet weak var blackView: UIView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
+    
+    override func viewWillAppear(animated: Bool) {
+        loadStudentLocations()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -33,19 +39,21 @@ class StudentLocationsMapViewController: UIViewController, MKMapViewDelegate {
         // Add observer to the refresh notification
         subscribeToRefreshNotifications()
         
-        // Populate the userData & uniqueKey with the data from the login scene
-        userData = appDelegate.udacityUserData
-        uniqueKey = appDelegate.userUniqueID
+        blackView.hidden = false
+        activityIndicator.startAnimating()
         
-        // load the students locations
+        // Populate the userData & uniqueKey with the data from the login scene
+        userData = savedStudents.udacityUserData
+        uniqueKey = savedStudents.userUniqueID
+        
         loadStudentLocations()
         
     }
     
     @IBAction func logoutButton(sender: UIBarButtonItem) {
         // Clear the user data saved in the app delegate
-        appDelegate.udacityUserData = nil
-        appDelegate.userUniqueID = nil
+        savedStudents.udacityUserData = nil
+        savedStudents.userUniqueID = nil
         
         UdacityClient.sharedInstance().deleteSession()
         
@@ -77,12 +85,15 @@ class StudentLocationsMapViewController: UIViewController, MKMapViewDelegate {
         // Remove the previous annotaions
         mapView.removeAnnotations(oldAnnotations)
         
+        blackView.hidden = false
+        activityIndicator.startAnimating()
+        
         ParseClient.sharedInstance().getStudentLocations() { (success, StudentsLocations: [StudentLocation]?, errorString) in
             
             if success {
                 if let StudentsLocations = StudentsLocations {
                     // Save the students locations to the app delegate
-                    self.appDelegate.studentsLocations = StudentsLocations
+                    self.savedStudents.studentsLocations = StudentsLocations
                     
                     // Notify the other tabs to reload their ceels
                     dispatch_async(dispatch_get_main_queue()) {
@@ -98,6 +109,7 @@ class StudentLocationsMapViewController: UIViewController, MKMapViewDelegate {
                 // Shutdown the black view & the activity indicator
                 dispatch_async(dispatch_get_main_queue()) {
                     self.blackView.hidden = true
+                    self.activityIndicator.stopAnimating()
                 }
                 
             }
@@ -114,7 +126,7 @@ class StudentLocationsMapViewController: UIViewController, MKMapViewDelegate {
     
     func annotateTheMapWithLocations() {
         
-        let locations = appDelegate.studentsLocations!
+        let locations = savedStudents.studentsLocations!
         // Create MKPointAnnotation for each dictionary in "locations".
         var annotations = [MKPointAnnotation]()
         

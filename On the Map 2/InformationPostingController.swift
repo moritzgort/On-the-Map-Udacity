@@ -20,8 +20,10 @@ class InformationPostingViewConroller: UIViewController, MKMapViewDelegate, UITe
     @IBOutlet weak var submitButton: UIButton!
     @IBOutlet weak var cancelButton: UIButton!
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     
     var tapRecognizer: UITapGestureRecognizer? = nil
+    var savedStudents = SavedStudents()
     
     // Add a reference to the delegate
     let locationTextViewDelegate = LocationTextViewDelegate()
@@ -38,8 +40,6 @@ class InformationPostingViewConroller: UIViewController, MKMapViewDelegate, UITe
     // Save the lat & long
     var placemarkLatitude: Double! = nil
     var placemarkLongitude: Double! = nil
-    
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -94,7 +94,7 @@ class InformationPostingViewConroller: UIViewController, MKMapViewDelegate, UITe
             prepareStudentData()
             
             // Post the location
-            ParseClient.sharedInstance().postStudentLocation(appDelegate.studentData){ (success, errorString) in
+            ParseClient.sharedInstance().postStudentLocation(savedStudents.studentData){ (success, errorString) in
                 
                 if success {
                     self.dismissViewControllerAnimated(true, completion: nil)
@@ -109,20 +109,24 @@ class InformationPostingViewConroller: UIViewController, MKMapViewDelegate, UITe
     func prepareStudentData() {
         
         var userDataDictionary = [String: AnyObject]()
-        userDataDictionary["objectId"] = "" // We don't really need the actual value here
-        userDataDictionary["uniqueKey"] = appDelegate.userUniqueID
-        userDataDictionary["firstName"] = appDelegate.udacityUserData.firstName
-        userDataDictionary["lastName"] = appDelegate.udacityUserData.lastName
+        userDataDictionary["objectId"] = ""
+        userDataDictionary["uniqueKey"] = savedStudents.userUniqueID
+        userDataDictionary["firstName"] = savedStudents.udacityUserData.firstName
+        userDataDictionary["lastName"] = savedStudents.udacityUserData.lastName
         userDataDictionary["mapString"] = locationTextView.text
         userDataDictionary["mediaURL"] = shareTextView.text
         userDataDictionary["latitude"] = placemarkLatitude
         userDataDictionary["longitude"] = placemarkLongitude
         
-        appDelegate.studentData = StudentLocation(dictionary: userDataDictionary)
+        savedStudents.studentData = StudentLocation(dictionary: userDataDictionary)
         
     }
     
     func findOnMapFromLocation(addressString: String) {
+        
+        activityIndicator.hidden = false
+        activityIndicator.startAnimating()
+        
         // Get placemark for a given location (string)
         CLGeocoder().geocodeAddressString(addressString) {(placemarks, error) in
             
@@ -143,6 +147,8 @@ class InformationPostingViewConroller: UIViewController, MKMapViewDelegate, UITe
                 
             } else {
                 self.displayError("Could Not Geocode the String.")
+                self.activityIndicator.stopAnimating()
+                self.activityIndicator.hidden = true
             }
             
         }
@@ -154,8 +160,8 @@ class InformationPostingViewConroller: UIViewController, MKMapViewDelegate, UITe
         // Remove the previous annotaion
         mapView.removeAnnotation(oldAnnotation)
         
-        let first = appDelegate.udacityUserData.firstName
-        let last = appDelegate.udacityUserData.lastName
+        let first = savedStudents.udacityUserData.firstName
+        let last = savedStudents.udacityUserData.lastName
         
         // Here we create the annotation and set its coordiate, title, and subtitle properties
         let annotation = MKPointAnnotation()
@@ -312,6 +318,7 @@ class InformationPostingViewConroller: UIViewController, MKMapViewDelegate, UITe
         cancelButton.hidden = false
         shareTextView.hidden = true
         mapView.hidden = true
+        activityIndicator.hidden = true
         submitButtonSubview.hidden = true
         submitButton.hidden = true
         
@@ -347,6 +354,8 @@ class InformationPostingViewConroller: UIViewController, MKMapViewDelegate, UITe
         findButonSubview.hidden = true
         shareTextView.hidden = false
         mapView.hidden = false
+        activityIndicator.hidden = false
+        activityIndicator.stopAnimating()
         submitButtonSubview.hidden = false
         submitButton.hidden = false
         

@@ -13,7 +13,8 @@ class StudentLocationsTableViewController: UIViewController, UITableViewDataSour
     // Varaibles to hold the user data & unique key
     var userData: UdacityUser!
     var uniqueKey: String!
-    let appDelegate = UIApplication.sharedApplication().delegate as! AppDelegate
+    
+    var savedStudents = SavedStudents()
     
     @IBOutlet weak var tableView: UITableView!
     
@@ -29,8 +30,8 @@ class StudentLocationsTableViewController: UIViewController, UITableViewDataSour
         self.navigationItem.setRightBarButtonItems([refreshButton, pinButton], animated: true)
         
         // Populate the userData & uniqueKey with the data from the login scene
-        userData = (UIApplication.sharedApplication().delegate as! AppDelegate).udacityUserData
-        uniqueKey = (UIApplication.sharedApplication().delegate as! AppDelegate).userUniqueID
+        userData = savedStudents.udacityUserData
+        uniqueKey = savedStudents.userUniqueID
     }
     
     override func viewWillAppear(animated: Bool) {
@@ -42,8 +43,8 @@ class StudentLocationsTableViewController: UIViewController, UITableViewDataSour
     
     @IBAction func logoutButton(sender: UIBarButtonItem) {
         // Clear the user data saved in the app delegate
-        (UIApplication.sharedApplication().delegate as! AppDelegate).udacityUserData = nil
-        (UIApplication.sharedApplication().delegate as! AppDelegate).userUniqueID = nil
+        userData = nil
+        uniqueKey = nil
         
         UdacityClient.sharedInstance().deleteSession()
         
@@ -89,8 +90,8 @@ class StudentLocationsTableViewController: UIViewController, UITableViewDataSour
     
     func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        if appDelegate.studentsLocations != nil {
-            return appDelegate.studentsLocations!.count
+        if savedStudents.studentsLocations != nil {
+            return savedStudents.studentsLocations!.count
         } else {
             return 0
         }
@@ -101,7 +102,7 @@ class StudentLocationsTableViewController: UIViewController, UITableViewDataSour
         let cell = tableView.dequeueReusableCellWithIdentifier("BasicTableCell")! as UITableViewCell
         
         // Set the name and the image
-        let student = appDelegate.studentsLocations![indexPath.row]
+        let student = savedStudents.studentsLocations![indexPath.row]
         cell.textLabel?.text = "\(student.firstName) \(student.lastName)"
         // cell.imageView?.image = UIImage(named: "pin")
         
@@ -110,7 +111,7 @@ class StudentLocationsTableViewController: UIViewController, UITableViewDataSour
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         // Open the media url in safari
-        let student = appDelegate.studentsLocations![indexPath.row]
+        let student = savedStudents.studentsLocations![indexPath.row]
         if let requestUrl = NSURL(string: student.mediaURL) {
             if UIApplication.sharedApplication().canOpenURL(requestUrl) {
                 UIApplication.sharedApplication().openURL(requestUrl)
