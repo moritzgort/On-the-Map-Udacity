@@ -16,8 +16,8 @@ extension ParseClient {
         static let RESTAPIKey: String = "QuWThTdiRmTux3YaDseUSEpUKo7aBYM737yKd4gY"
         
         // MARK: URLs
-        static let BaseURL: String = "http://api.parse.com/1/classes/StudentLocation"
-        static let BaseURLSecure: String = "https://api.parse.com/1/classes/StudentLocation"
+        static let BaseURL: String = "http://api.parse.com/1/classes/StudentLocation?order=-updatedAt"
+        static let BaseURLSecure: String = "https://api.parse.com/1/classes/StudentLocation?order=-updatedAt"
         
     }
     
